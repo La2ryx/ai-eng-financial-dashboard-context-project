@@ -60,6 +60,7 @@ cd frontend && npm test -- --run
 ## Troubleshooting
 
 ### App does not start
+
 - Run:
   ```bash
   docker compose up --build
@@ -70,6 +71,7 @@ cd frontend && npm test -- --run
   ```
 
 ### Frontend tests fail
+
 - Install the frontend dependencies and run the test suite:
   ```bash
   cd frontend
@@ -78,6 +80,7 @@ cd frontend && npm test -- --run
   ```
 
 ### Backend tests fail
+
 - Activate the project virtual environment and run:
   ```bash
   source .venv/bin/activate
@@ -85,10 +88,12 @@ cd frontend && npm test -- --run
   ```
 
 ### API requests fail
+
 - Check that the backend is running on http://localhost:8000.
 - Confirm that the frontend is using the Vite proxy or a valid `VITE_API_BASE_URL` value.
 
 ### Ports are already in use
+
 - Stop the conflicting process or restart the app:
   ```bash
   docker compose down
