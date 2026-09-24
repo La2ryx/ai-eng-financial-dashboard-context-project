@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildDateRangeQuery,
   computeKPIs,
   computeMonthlyData,
   formatCurrency,
@@ -100,6 +101,21 @@ describe("computeMonthlyData", () => {
       outcome: 0,
       profitPercent: 100,
     });
+  });
+});
+
+describe("buildDateRangeQuery", () => {
+  it("builds query params only for set dates", () => {
+    expect(buildDateRangeQuery("2024-01-01", "2024-02-15")).toEqual({
+      start_date: "2024-01-01",
+      end_date: "2024-02-15",
+    });
+
+    expect(buildDateRangeQuery("", "2024-02-15")).toEqual({
+      end_date: "2024-02-15",
+    });
+
+    expect(buildDateRangeQuery(null, null)).toEqual({});
   });
 });
 

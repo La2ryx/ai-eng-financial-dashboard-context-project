@@ -78,3 +78,20 @@ export function formatCurrency(value: number): string {
 export function formatPercent(value: number): string {
   return `${value.toFixed(1)}%`;
 }
+
+export function buildDateRangeQuery(
+  startDate: string | null,
+  endDate: string | null,
+): Record<string, string> {
+  const params: Record<string, string> = {};
+
+  if (startDate) {
+    params.start_date = startDate;
+  }
+
+  if (endDate) {
+    params.end_date = endDate;
+  }
+
+  return params;
+}
