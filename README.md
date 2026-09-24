@@ -42,13 +42,59 @@ _Financial metrics dashboard with a React + TypeScript frontend and a FastAPI ba
 docker compose up --build
 ```
 
-The frontend uses the Vite proxy for `/api` by default, so no extra environment variables are required in local development or Codespaces.
-If you need to target a different backend origin, copy `frontend/.env.example` to `.env` and set `VITE_API_BASE_URL`.
+The frontend uses the Vite proxy for `/api` by default, so no extra environment variables are required in local development or Codespaces. If you need to target a different backend origin, copy `frontend/.env.example` to `.env` and set `VITE_API_BASE_URL`.
 
 - Frontend: http://localhost:5173
 - Backend: http://localhost:8000
 - API documentation: http://localhost:8000/docs
 
+### Quick validation
+
+Run the checks below from the project root:
+
+```bash
+pytest backend/tests -q
+cd frontend && npm test -- --run
+```
+
+## Troubleshooting
+
+### App does not start
+- Run:
+  ```bash
+  docker compose up --build
+  ```
+- If the containers are already running, stop them first:
+  ```bash
+  docker compose down
+  ```
+
+### Frontend tests fail
+- Install the frontend dependencies and run the test suite:
+  ```bash
+  cd frontend
+  npm install
+  npm test -- --run
+  ```
+
+### Backend tests fail
+- Activate the project virtual environment and run:
+  ```bash
+  source .venv/bin/activate
+  pytest backend/tests -q
+  ```
+
+### API requests fail
+- Check that the backend is running on http://localhost:8000.
+- Confirm that the frontend is using the Vite proxy or a valid `VITE_API_BASE_URL` value.
+
+### Ports are already in use
+- Stop the conflicting process or restart the app:
+  ```bash
+  docker compose down
+  docker compose up --build
+  ```
+
 ---
 
-This and many other projects are built by students as part of the [Career Programs](https://4geeksacademy.com/compare-programs) at [4Geeks Academy](https://4geeksacademy.com). By [@marcogonzalo](https://github.com/marcogonzalo) and [other contributors](https://github.com/4GeeksAcademy/ai-eng-financial-dashboard-context-project/graphs/contributors). Find out more about [AI Engineering](https://4geeksacademy.com/en/coding-bootcamps/ai-engineering), [Data Science & Machine Learning](https://4geeksacademy.com/en/coding-bootcamps/data-science-ml), [Cybersecurity](https://4geeksacademy.com/en/coding-bootcamps/cybersecurity) and [Full-Stack Software Developer with AI](https://4geeksacademy.com/en/coding-bootcamps/full-stack-developer).
+This and many other projects are built by students as part of the [Career Programs](https://4geeksacademy.com/compare-programs) at [4Geeks Academy](https://4geeksacademy.com). By [@marcogonzalo](https://github.com/marcogonzalo) and [other contributors](https://github.com/4GeeksAcademy/ai-eng-financial-dashboard-context-project/graphs/contributors). Find out more about [AI Engineering](https://4geeksacademy.com/en/coding-bootcamps/ai-engineering), [Data Science &amp; Machine Learning](https://4geeksacademy.com/en/coding-bootcamps/data-science-ml), [Cybersecurity](https://4geeksacademy.com/en/coding-bootcamps/cybersecurity) and [Full-Stack Software Developer with AI](https://4geeksacademy.com/en/coding-bootcamps/full-stack-developer).
