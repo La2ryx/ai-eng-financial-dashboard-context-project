@@ -90,11 +90,11 @@ The status below tracks this work against the supplied reference checklist. "Pen
 | Discover and verify the setup/run path from repository evidence | ✅ Workspace run verified | This document cites the README, Compose file, Dockerfiles, and successful local HTTP probes. Independent student setup remains unverified. |
 | AI-generated project summary checked against repository facts | ✅ Complete | See [AI-generated project summary](#ai-generated-project-summary-checked-against-the-repository) and linked source. |
 | Explicit verification trail with correction or ✅ checks | ✅ Complete | See [claim verification trail](#claim-verification-trail); it includes a corrected false inference and an unverified student-only claim. |
-| Phase-separated commit history | In progress | Phases 1 and 2 have separate commits; Phases 3 and 4 are pending. |
+| Phase-separated commit history | In progress | Phases 1–3 have separate commits; Phase 4 is pending. |
 | Concrete categorized findings mapped to rules | ✅ Complete | Findings are categorized above; see the rule-to-finding mapping. |
 | Project-specific `.agents/rules` files | ✅ Complete | Three rules exist under `.agents/rules/`. |
 | Each rule validated against a real repository workflow | ✅ Complete | See the rule-to-finding mapping and validation results above. |
-| `memory-bank` covers product, stack, and current status | Pending | To be added in Phase 4. |
+| `memory-bank` covers product, stack, and current status | ✅ Complete | See [product overview](./memory-bank/product-overview.md), [tech stack](./memory-bank/tech-stack.md), and [current status](./memory-bank/current-status.md). |
 | Artifacts demonstrate verified agent-assisted stewardship | In progress | This document provides evidence and status; final cross-check is pending. Student spot-check and acceptance remain unverified. |
 
 ## Recommendations beyond the minimum
