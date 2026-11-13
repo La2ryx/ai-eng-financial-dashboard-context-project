@@ -39,3 +39,55 @@ In this workspace, `docker compose up --build -d` completed successfully. The fr
 ## Checklist status at initial inspection
 
 The application and local run path existed, but there were no `.agents/rules/` files or `memory-bank/` directory at the start of this work. Those deliverables and their validation evidence are tracked in the task's later phases; this statement records the initial state, not the final submission status.
+
+## Engineering findings
+
+### Architecture and data flow
+
+- **Observed convention:** The current dashboard fetches movement records from `/api/metrics` when the page loads, then derives KPI values and monthly chart points in the frontend. The backend also exposes facets, grouped summaries, top-category, comparison, alert, and business-type routes, but the current page does not call those routes ([frontend data flow](./frontend/src/App.tsx#L15), [frontend calculations](./frontend/src/lib/financial-utils.ts#L21), [additional API routes](./backend/app/routes.py#L262)).
+- **Observed convention:** Metric route handlers declare Pydantic response models and commonly begin from seeded mock movements ([API model](./backend/app/routes.py#L22), [movement endpoint](./backend/app/routes.py#L248)).
+- **Risk / limitation:** The header's period is a fixed string, while mock-data years are computed relative to the current date. The display can therefore misrepresent the data period ([header usage](./frontend/src/App.tsx#L49), [date selection](./backend/app/routes.py#L65)).
+- **Risk / limitation:** `generate_mock_movements(seed=...)` calls module-level `random.seed`, changing the process-wide random generator state. If other code later relies on random state, isolate the generator with a local `random.Random(seed)` ([generator](./backend/app/routes.py#L94)).
+
+### Domain naming and contracts
+
+- **Observed convention:** The backend uses constrained `Literal` types for operation, category, business type, and grouping query values; the frontend defines corresponding TypeScript unions and movement fields ([backend types](./backend/app/routes.py#L11), [frontend types](./frontend/src/lib/financial-types.ts#L1)).
+- **Validation implication:** When changing a domain value or response shape, check both language-level definitions and route tests so the client/server contract remains aligned ([backend route tests](./backend/tests/test_routes.py#L72), [frontend movement type](./frontend/src/lib/financial-types.ts#L1)).
+
+### Testing
+
+- **Observed convention:** Frontend tests target pure calculation and formatting helpers, including a no-income edge case and chronological grouping across years ([frontend utility tests](./frontend/src/lib/financial-utils.test.ts#L26)).
+- **Observed convention:** Backend tests use FastAPI `TestClient` and cover date/category/operation filters, grouped summaries, and response fields ([backend tests](./backend/tests/test_routes.py#L3)).
+- **Gap:** The discovered frontend tests do not exercise the `App` fetch lifecycle, loading state, or error state. If changing page/API integration, add focused component-level coverage rather than relying only on utility tests ([app lifecycle](./frontend/src/App.tsx#L23), [utility test file](./frontend/src/lib/financial-utils.test.ts#L1)).
+- **Available commands:** Frontend scripts include `npm test`, `npm run lint`, and `npm run build` ([package scripts](./frontend/package.json#L7)).
+
+### Documentation and operational workflow
+
+- **Observed convention:** The README is the repository's stated Compose startup guide, Vite forwards `/api` to the Compose backend service name, and Compose publishes the frontend/backend ports ([README](./README.md#L39), [Vite proxy](./frontend/vite.config.ts#L9), [Compose services](./docker-compose.yml#L1)).
+- **Risk / limitation:** FastAPI CORS currently allows all origins while also allowing credentials. This is permissive configuration; review and narrow origins before exposing the API beyond the local development context ([CORS config](./backend/app/main.py#L7)).
+- **Documentation gap at initial inspection:** The README describes an expected `.agents` layout, but the repository initially had no rules or memory bank. The new rules and memory bank should remain evidence-based and linked to this findings record.
+
+## Rubric traceability
+
+The status below tracks this work against the supplied reference checklist. "Pending" means a later phase still needs to produce or verify the artifact; it is not a pass.
+
+| Checklist requirement | Status | Evidence or remaining work |
+| --- | --- | --- |
+| Discover and verify the setup/run path from repository evidence | ✅ Workspace run verified | This document cites the README, Compose file, Dockerfiles, and successful local HTTP probes. Independent student setup remains unverified. |
+| AI-generated project summary checked against repository facts | ✅ Complete | See [AI-generated project summary](#ai-generated-project-summary-checked-against-the-repository) and linked source. |
+| Explicit verification trail with correction or ✅ checks | ✅ Complete | See [claim verification trail](#claim-verification-trail); it includes a corrected false inference and an unverified student-only claim. |
+| Phase-separated commit history | In progress | Phase 1 has a separate commit; remaining phase commits are pending. |
+| Concrete categorized findings mapped to rules | In progress | Findings are categorized and source-linked above; the `.agents/rules` mappings are pending Phase 3. |
+| Project-specific `.agents/rules` files | Pending | To be added in Phase 3. |
+| Each rule validated against a real repository workflow | Pending | To be exercised and recorded in Phase 3. |
+| `memory-bank` covers product, stack, and current status | Pending | To be added in Phase 4. |
+| Artifacts demonstrate verified agent-assisted stewardship | In progress | This document provides evidence and status; final cross-check is pending. Student spot-check and acceptance remain unverified. |
+
+## Recommendations beyond the minimum
+
+These are evidence-backed suggestions, not changes made as part of the context-building task:
+
+1. **Resolve the period/data mismatch before presenting the dashboard as a particular year.** Derive the label from the data or make the API data range match the selected label; add a regression test for the chosen behavior.
+2. **Add an `App`-level test for successful loading and API failure.** Existing frontend coverage tests calculations but not the page's network and error-state behavior.
+3. **Isolate seeded randomness.** Use a local random generator so deterministic mock generation does not reset module-global random state.
+4. **Review CORS for any non-local deployment.** Replace the wildcard origin with the intended trusted frontend origins if credentials are needed.
