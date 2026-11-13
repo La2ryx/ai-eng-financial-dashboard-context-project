@@ -79,23 +79,38 @@ Validation commands and results:
 
 - `docker compose exec -T frontend sh -c 'npm test && npm run lint && npm run build'` — passed; Vitest reported 1 file and 5 passing tests, ESLint passed, and the production build completed. Vite emitted an advisory because the minified JavaScript chunk is about 584 kB, above its 500 kB notice threshold.
 - `docker compose exec -T backend pytest -q` — 15 passed. Pytest emitted a `StarletteDeprecationWarning` about the current `httpx` integration in `TestClient`.
-- Local documentation link audit — all repository file and line links in `verification.md` and the three rule files resolved.
+- Local documentation link audits — first checked `verification.md` and the three rules; the final audit checked all seven verification, rule, and memory-bank documents. All local file, line, and report-section links resolved.
 
 ## Rubric traceability
 
-The status below tracks this work against the supplied reference checklist. "Pending" means a later phase still needs to produce or verify the artifact; it is not a pass.
+The status below tracks this work against the supplied reference checklist. ✅ marks repository-controlled items checked in this workspace; ❓ marks a student-only or otherwise unverified confirmation.
 
 | Checklist requirement | Status | Evidence or remaining work |
 | --- | --- | --- |
 | Discover and verify the setup/run path from repository evidence | ✅ Workspace run verified | This document cites the README, Compose file, Dockerfiles, and successful local HTTP probes. Independent student setup remains unverified. |
 | AI-generated project summary checked against repository facts | ✅ Complete | See [AI-generated project summary](#ai-generated-project-summary-checked-against-the-repository) and linked source. |
 | Explicit verification trail with correction or ✅ checks | ✅ Complete | See [claim verification trail](#claim-verification-trail); it includes a corrected false inference and an unverified student-only claim. |
-| Phase-separated commit history | In progress | Phases 1–3 have separate commits; Phase 4 is pending. |
+| Phase-separated commit history | ✅ Complete | See the four phase commits below. |
 | Concrete categorized findings mapped to rules | ✅ Complete | Findings are categorized above; see the rule-to-finding mapping. |
 | Project-specific `.agents/rules` files | ✅ Complete | Three rules exist under `.agents/rules/`. |
 | Each rule validated against a real repository workflow | ✅ Complete | See the rule-to-finding mapping and validation results above. |
 | `memory-bank` covers product, stack, and current status | ✅ Complete | See [product overview](./memory-bank/product-overview.md), [tech stack](./memory-bank/tech-stack.md), and [current status](./memory-bank/current-status.md). |
-| Artifacts demonstrate verified agent-assisted stewardship | In progress | This document provides evidence and status; final cross-check is pending. Student spot-check and acceptance remain unverified. |
+| Artifacts demonstrate verified agent-assisted stewardship | Agent artifacts complete; student review ❓ | Source links, test results, runtime probes, and phase commits are recorded. The student must still independently spot-check and accept the artifacts. |
+
+## Phase commit trail
+
+Each major phase was committed separately:
+
+1. Phase 1 — verified summary and setup trail: `ad3cdd2` (`docs: add verified project summary and setup trail`).
+2. Phase 2 — categorized engineering findings: `ab54424` (`docs: document evidence-based engineering findings`).
+3. Phase 3 — actionable rules and workflow validation: `227877f` (`docs: add actionable repository agent rules`).
+4. Phase 4 — product, stack, and status memory bank: `892ac82` (`docs: add product and technical memory bank`).
+
+## Final verification
+
+After the four deliverable phases were committed, both Compose services remained running. The frontend, backend `/health`, and API docs returned HTTP 200; `GET /api/metrics` returned 360 chronologically ordered movements.
+
+The agent's commits and checks do not substitute for the student's required review. The student should inspect the linked source claims and generated artifacts, confirm the local/fork setup, and decide whether to accept the recommendations before treating the work as validated.
 
 ## Recommendations beyond the minimum
 
