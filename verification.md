@@ -67,6 +67,20 @@ The application and local run path existed, but there were no `.agents/rules/` f
 - **Risk / limitation:** FastAPI CORS currently allows all origins while also allowing credentials. This is permissive configuration; review and narrow origins before exposing the API beyond the local development context ([CORS config](./backend/app/main.py#L7)).
 - **Documentation gap at initial inspection:** The README describes an expected `.agents` layout, but the repository initially had no rules or memory bank. The new rules and memory bank should remain evidence-based and linked to this findings record.
 
+## Rule-to-finding mapping and validation
+
+| Rule | Concrete finding it addresses | Repository workflow used to validate it | Result |
+| --- | --- | --- | --- |
+| [`architecture-and-api.md`](./.agents/rules/architecture-and-api.md) | The frontend fetches `/api/metrics`, calculates chart/KPI data locally, and has parallel backend/frontend domain types. | Traced the active page-to-route contract; ran the frontend calculation tests and backend route tests. | Frontend: 5 tests passed. Backend: 15 tests passed. |
+| [`testing-and-validation.md`](./.agents/rules/testing-and-validation.md) | Frontend tests cover helpers; backend tests use `TestClient` for route behavior, so relevant checks differ by layer. | Ran the documented frontend test, lint, and build scripts, plus backend pytest in the running Compose services. | All commands passed. Vite reported a bundle-size advisory; pytest reported one Starlette/httpx deprecation warning. |
+| [`evidence-and-documentation.md`](./.agents/rules/evidence-and-documentation.md) | The fixed period label can be mistaken for the generated data range; initial repository context lacked the required rules/memory bank. | Applied source links and confidence labels in this report and checked local file/line links across this report and all three rules. | All local file and line links validated in four Markdown files; the inaccurate period inference is explicitly corrected above. |
+
+Validation commands and results:
+
+- `docker compose exec -T frontend sh -c 'npm test && npm run lint && npm run build'` — passed; Vitest reported 1 file and 5 passing tests, ESLint passed, and the production build completed. Vite emitted an advisory because the minified JavaScript chunk is about 584 kB, above its 500 kB notice threshold.
+- `docker compose exec -T backend pytest -q` — 15 passed. Pytest emitted a `StarletteDeprecationWarning` about the current `httpx` integration in `TestClient`.
+- Local documentation link audit — all repository file and line links in `verification.md` and the three rule files resolved.
+
 ## Rubric traceability
 
 The status below tracks this work against the supplied reference checklist. "Pending" means a later phase still needs to produce or verify the artifact; it is not a pass.
@@ -76,10 +90,10 @@ The status below tracks this work against the supplied reference checklist. "Pen
 | Discover and verify the setup/run path from repository evidence | ✅ Workspace run verified | This document cites the README, Compose file, Dockerfiles, and successful local HTTP probes. Independent student setup remains unverified. |
 | AI-generated project summary checked against repository facts | ✅ Complete | See [AI-generated project summary](#ai-generated-project-summary-checked-against-the-repository) and linked source. |
 | Explicit verification trail with correction or ✅ checks | ✅ Complete | See [claim verification trail](#claim-verification-trail); it includes a corrected false inference and an unverified student-only claim. |
-| Phase-separated commit history | In progress | Phase 1 has a separate commit; remaining phase commits are pending. |
-| Concrete categorized findings mapped to rules | In progress | Findings are categorized and source-linked above; the `.agents/rules` mappings are pending Phase 3. |
-| Project-specific `.agents/rules` files | Pending | To be added in Phase 3. |
-| Each rule validated against a real repository workflow | Pending | To be exercised and recorded in Phase 3. |
+| Phase-separated commit history | In progress | Phases 1 and 2 have separate commits; Phases 3 and 4 are pending. |
+| Concrete categorized findings mapped to rules | ✅ Complete | Findings are categorized above; see the rule-to-finding mapping. |
+| Project-specific `.agents/rules` files | ✅ Complete | Three rules exist under `.agents/rules/`. |
+| Each rule validated against a real repository workflow | ✅ Complete | See the rule-to-finding mapping and validation results above. |
 | `memory-bank` covers product, stack, and current status | Pending | To be added in Phase 4. |
 | Artifacts demonstrate verified agent-assisted stewardship | In progress | This document provides evidence and status; final cross-check is pending. Student spot-check and acceptance remain unverified. |
 
