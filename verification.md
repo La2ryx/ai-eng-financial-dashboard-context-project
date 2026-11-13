@@ -81,6 +81,18 @@ Validation commands and results:
 - `docker compose exec -T backend pytest -q` — 15 passed. Pytest emitted a `StarletteDeprecationWarning` about the current `httpx` integration in `TestClient`.
 - Local documentation link audits — first checked `verification.md` and the three rules; the final audit checked all seven verification, rule, and memory-bank documents. All local file, line, and report-section links resolved.
 
+### Applied documentation task: frontend/API integration
+
+The architecture rule initially described the relative `/api` path without mentioning the supported backend-origin override. For a real documentation task, the agent traced the frontend request, Vite proxy, and README, then refined the [architecture rule](./.agents/rules/architecture-and-api.md) and updated the [tech-stack memory](./memory-bank/tech-stack.md). The default is a relative request through Vite; `VITE_API_BASE_URL` optionally supplies another origin ([request](./frontend/src/App.tsx#L13), [proxy](./frontend/vite.config.ts#L9), [README](./README.md#L44)). The override was verified in code and documentation, not exercised against a separate backend.
+
+The testing rule was applied by running focused tests and a live integration check:
+
+- `docker compose exec -T frontend npm test -- src/lib/financial-utils.test.ts` — 5 passed.
+- `docker compose exec -T backend pytest -q tests/test_routes.py -k 'metrics_endpoint_respects_date_filters or metrics_endpoint_filters_by_category or metrics_endpoint_filters_by_operation_type'` — 3 passed, 12 deselected; the existing Starlette/httpx deprecation warning remained.
+- Requests to `http://localhost:5173/api/metrics` and `http://localhost:8000/api/metrics` returned identical JSON containing 360 records. This validates the default live proxy path, not the optional override.
+
+The evidence/documentation rule was applied to the changed memory-bank entry and this record using source links and explicit limits. This task changed documentation, not frontend or backend behavior.
+
 ## Rubric traceability
 
 The status below tracks this work against the supplied reference checklist. ✅ marks repository-controlled items checked in this workspace; ❓ marks a student-only or otherwise unverified confirmation.

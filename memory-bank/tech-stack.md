@@ -4,7 +4,7 @@
 
 - React with TypeScript, bootstrapped by Vite ([dependencies](../frontend/package.json#L15), [entry point](../frontend/src/main.tsx#L1)).
 - Tailwind CSS and Recharts are among the declared UI/chart dependencies ([frontend dependencies](../frontend/package.json#L15)).
-- Vite serves the development frontend and proxies `/api` requests to the Compose backend service ([Vite config](../frontend/vite.config.ts#L9)).
+- By default, the frontend requests `/api` through Vite's proxy to the Compose backend; `VITE_API_BASE_URL` can target a different backend origin ([request](../frontend/src/App.tsx#L13), [Vite config](../frontend/vite.config.ts#L9), [README](../README.md#L44)).
 - Frontend tests use Vitest; ESLint and TypeScript/Vite provide lint and production-build checks ([scripts](../frontend/package.json#L7)).
 
 ## Backend
