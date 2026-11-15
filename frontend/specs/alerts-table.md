@@ -1,6 +1,6 @@
 # Alerts table specification
 
-**Status:** Proposal only; not implemented in the live dashboard.
+**Status:** Implemented in the live dashboard with monthly grouping and the API's 30% threshold.
 
 ## Goal
 
@@ -22,7 +22,7 @@ Order rows by period ascending as returned by the API. Use currency formatting c
 ## Proposed behavior and states
 
 - Default grouping is monthly and the default threshold is 30%, matching the API defaults.
-- If date range or business type controls are later added, pass the same values to the alerts route so the table describes the same dashboard slice.
+- The live date range and business-type selections are passed to the alerts route so the table describes the same dashboard slice.
 - Provide loading, request-error, and empty-result states. Empty means no periods exceeded the threshold; it is not an API failure.
 - The backend excludes the first period because it has no preceding baseline and only emits an alert when baseline is positive and increase strictly exceeds the threshold. A UI must not imply that every outcome increase will appear.
 - Preserve keyboard navigation and semantic table headers; provide an accessible caption or equivalent heading.
@@ -37,4 +37,4 @@ Order rows by period ascending as returned by the API. Use currency formatting c
 
 ## Out of scope
 
-No alert acknowledgement, severity ranking, notification delivery, threshold editing UX, or API behavior change is specified here. The current React page does not call this endpoint.
+No alert acknowledgement, severity ranking, notification delivery, threshold editing UX, or API behavior change is specified here. The UI currently uses monthly grouping and the default threshold without controls to change either.

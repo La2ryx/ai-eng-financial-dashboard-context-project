@@ -1,6 +1,6 @@
 # Date range filter specification
 
-**Status:** Proposal only; not implemented in the live dashboard.
+**Status:** Implemented in the live dashboard.
 
 ## Goal
 
@@ -25,7 +25,7 @@ The raw movement route is `GET /api/metrics` with optional `start_date` and `end
 2. Start/end validation prevents reversed or invalid ranges from being applied.
 3. The displayed period matches the applied range; it never claims a fixed year unsupported by the response.
 4. Empty, loading, and error states are distinguishable.
-5. Tests cover both date-boundary filtering and invalid range behavior (backend contract tests already cover route filtering; add focused UI/request tests for the control).
+5. Tests cover malformed and reversed date rejection, and verify that the same inclusive date bounds are sent with movement and alert requests; backend route tests cover date filtering.
 
 ## Out of scope
 

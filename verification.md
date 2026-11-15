@@ -108,6 +108,7 @@ The status below tracks this work against the supplied reference checklist. ✅ 
 | Each rule validated against a real repository workflow | ✅ Complete | See the rule-to-finding mapping and validation results above. |
 | `memory-bank` covers product, stack, and current status | ✅ Complete | See [product overview](./memory-bank/product-overview.md), [tech stack](./memory-bank/tech-stack.md), and [current status](./memory-bank/current-status.md). |
 | Artifacts demonstrate verified agent-assisted stewardship | Agent artifacts complete; student review ❓ | Source links, test results, runtime probes, and phase commits are recorded. The student must still independently spot-check and accept the artifacts. |
+| Frontend date range, business-type filter, and alerts view are implemented | ✅ Implemented and tested | See the live implementation follow-up below and tests under `frontend/src/lib/dashboard-api.test.ts` and `frontend/src/components/dashboard/dashboard-accessibility.test.tsx`. |
 
 ## Phase commit trail
 
@@ -163,3 +164,20 @@ Exact checks run from `frontend/`:
 - `git diff --check` — passed.
 
 The tests verify accessible markup in static rendering; they are not a substitute for a manual screen-reader/keyboard audit. No runtime speedup is claimed.
+
+### Submission follow-up and human review
+
+The feature specifications from `origin/feature/frontend-specs` were integrated into this branch and then implemented in the live page. The implementation uses only existing backend routes; it does not alter backend behavior or add persisted financial data.
+
+The following checks remain intentionally unclaimed because they require the student's own review or real browser/assistive-technology use:
+
+- ❓ **Independent artifact review:** Personally inspect this report, the linked source/rules/memory-bank artifacts, and the proposal boundary in `frontend/specs/README.md`; confirm the workspace/fork is the one intended for submission and accept or amend the conclusions.
+- ❓ **Manual accessibility audit:** In the target browser, use keyboard-only navigation to check logical tab order and visible focus. With the screen reader used for the course/project, inspect the KPI group, both chart labels and their data tables, and loading/error announcements. Record browser, OS, screen reader/version, observed issues, and outcome here only after performing the review. Automated static markup tests are not a substitute.
+- ❓ **Runtime performance audit:** No browser-based before/after interaction or loading benchmark is available in this validation. Bundle sizes are documented above but do not establish runtime performance improvement. If the hand-in requires a performance claim, measure the same production build and representative interaction in a browser before and after the change, and record tool, environment, metric, and results; otherwise make no runtime speedup claim.
+
+
+### Live filters and alerts implementation
+
+The dashboard now initializes its date bounds from `/api/metrics/facets`; rejects malformed, impossible, or reversed dates before applying them; fetches raw all-business or dedicated B2B/B2C movements with inclusive date bounds; and requests monthly alerts using the same range/business-type selection. The page label reflects the applied dates and selection. The accessible alerts table shows period, outcome total, historical baseline, and increase percentage, and distinguishes loading, API failure, and empty results. An explicit no-movements message is shown when the selected filter returns no records. No backend changes were needed.
+
+New frontend coverage checks invalid date handling, route/query mapping for all-business and B2B/B2C movement requests, shared filters for alerts, API failures, semantic alert headers/percentage formatting, and labeled filter controls. Final implementation checks: `npm test` — 3 files, 18 tests passed; `npm run lint` — passed; `npm run build` — passed (main JavaScript chunk 194.40 kB / 61.77 kB gzip, chart chunk 342.29 kB / 100.46 kB gzip); editor diagnostics reported no errors in the changed application, API, and UI modules. The backend suite (`docker compose exec -T backend pytest -q`) passed 15 tests with one existing Starlette/httpx deprecation warning. Compose smoke checks returned frontend HTTP 200, valid facets, 169 B2B movements all tagged B2B, and a valid array response for B2B-filtered monthly alerts. These are automated/integration checks; browser interaction, manual screen-reader checks, and runtime performance benchmarks remain unverified.

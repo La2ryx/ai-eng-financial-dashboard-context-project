@@ -1,6 +1,6 @@
 # Frontend feature specifications
 
-This directory describes proposed frontend behavior and records API contracts for a later implementation. **It is specification-only:** the live React dashboard does not currently implement the date filter, alerts table, or B2B/B2C selector/views described here. No components, hooks, or application behavior are changed by these documents.
+This directory records the product behavior and API contracts implemented in the live dashboard. The date range, business-type selector, and alerts table are wired to the existing backend endpoints and covered by frontend tests. These features consume generated mock movements; they do not add persisted financial data or change backend behavior.
 
 ## Specs
 
@@ -18,6 +18,6 @@ This directory describes proposed frontend behavior and records API contracts fo
 
 The API returns dates as `YYYY-MM-DD` strings over JSON. The backend's `start_date` and `end_date` movement filters are inclusive. The raw `/api/metrics` route has no `business_type` parameter, but dedicated `/api/metrics/b2b` and `/api/metrics/b2c` movement routes do exist; aggregate routes also accept `business_type` where documented. Implementations should use the route contracts as written rather than assuming every endpoint accepts every filter.
 
-## Status and implementation boundary
+## Implementation status and boundary
 
-All specifications are proposals, not approved product requirements. The current live page fetches raw `/api/metrics` movements and computes KPIs/monthly chart values in the frontend. It does not call the alerts endpoint or render these proposed controls/table/views. The API may support filtering/aggregation beyond what the live dashboard consumes. Implementing any item requires a separate change, design review, and tests; do not import these spec types into production code until that work is explicitly undertaken.
+The live page loads the available date limits from `/api/metrics/facets`, fetches all-business movements from `/api/metrics` or segment movements from `/api/metrics/b2b` and `/api/metrics/b2c`, and requests monthly alerts from `/api/metrics/alerts` using the applied dates and business type. Invalid date ranges are rejected before requests are applied. The UI distinguishes loading, API failure, and empty alert results. The API may support additional aggregation routes not consumed by the current page; do not imply those are displayed.

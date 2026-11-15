@@ -7,17 +7,19 @@
 - Local development uses a Compose frontend/backend setup documented in the [README](../README.md#L39).
 - A repository-specific [dashboard quality skill](../.agents/skills/dashboard-quality/SKILL.md) now records the discovery workflow for UI/API changes, accessibility checks, evidence-led performance work, and validation expectations.
 - Dashboard charts now include screen-reader-accessible data tables and chart labels; loading and API errors are announced, KPI collection has an accessible label, and chart line animations are disabled ([dashboard page](../frontend/src/App.tsx), [income/outcome chart](../frontend/src/components/dashboard/income-outcome-chart.tsx), [profit chart](../frontend/src/components/dashboard/profit-percent-chart.tsx), [KPI row](../frontend/src/components/dashboard/kpi-row.tsx)).
+- The date-range, alerts-table, and B2B/B2C specifications and API contract types are integrated under [`frontend/specs/`](../frontend/specs/README.md), and the first implementation of all three is now live in the dashboard.
+- The live dashboard now initializes date controls from `/api/metrics/facets`, applies inclusive dates to movement and alert requests, uses dedicated `/api/metrics/b2b` or `/api/metrics/b2c` routes for segment selection, and renders monthly alerts in an accessible table. Invalid ranges are rejected; movement and alert loading/error/empty states are distinguished ([page](../frontend/src/App.tsx), [API helpers](../frontend/src/lib/dashboard-api.ts), [filter controls](../frontend/src/components/dashboard/date-business-filters.tsx), [alerts table](../frontend/src/components/dashboard/alerts-table.tsx)).
 
 ## Known limitations and risks
 
-- The dashboard period label is hard-coded as “2024 - Full Year,” while generated record dates are chosen relative to the current date. The label therefore does not guarantee that the displayed records cover 2024 ([frontend label](../frontend/src/App.tsx#L49), [backend date logic](../backend/app/routes.py#L65)).
+- The dashboard period label now reflects the applied start/end dates and business-type selection, replacing the previous hard-coded 2024 label. The backend still supplies generated mock data; it is not persisted business data ([page](../frontend/src/App.tsx), [backend generator](../backend/app/routes.py#L94)).
 - The current page consumes the raw movement endpoint and calculates aggregates in the frontend; additional aggregation endpoints exist but are not used by this page ([frontend request](../frontend/src/App.tsx#L15), [backend summary route](../backend/app/routes.py#L268)).
 - Frontend tests cover calculation/formatting helpers, not the page's network lifecycle. Backend tests exercise route behavior ([frontend tests](../frontend/src/lib/financial-utils.test.ts#L1), [backend tests](../backend/tests/test_routes.py#L1)).
 - CORS allows all origins while credentials are enabled; review this configuration before non-local exposure ([CORS setup](../backend/app/main.py#L7)).
 
 ## Validation snapshot
 
-Earlier context-building validation included a successful Compose run, frontend tests (5), lint/build, and backend tests (15); the initial build reported a JavaScript chunk above Vite's 500 kB advisory threshold. After dependency installation and dashboard follow-up work, current frontend validation is 8 tests passing, lint passing, production build passing, and no workspace diagnostics. Chart components are now lazy-loaded: the build emits a 187.80 kB main JavaScript chunk (59.89 kB gzip) and a separate 342.29 kB `LineChart` chunk (100.53 kB gzip). This removes the oversized-main-chunk warning; it is a bundle composition measurement, not a runtime speed benchmark. Full command details are in the [verification report](../verification.md#dashboard-quality-change-validation).
+Earlier context-building validation included a successful Compose run, frontend tests, lint/build, and backend tests (15); the initial build reported a JavaScript chunk above Vite's 500 kB advisory threshold. The live-filter/alerts implementation now has frontend tests, lint, TypeScript/Vite build, and backend route tests. Chart components are lazy-loaded. Build sizes are recorded in the [verification report](../verification.md#dashboard-quality-change-validation); they are bundle composition measurements, not runtime speed benchmarks.
 
 The dashboard accessibility/performance update adds semantically labeled chart regions and text equivalents for chart data, status/error announcements, disables line-chart animations, and lazy-loads chart components. Static-render accessibility regression tests check the KPI group, chart labels, and table structure/content. These checks do not claim a manual assistive-technology audit or measured runtime speedup.
 
@@ -34,6 +36,6 @@ The dashboard accessibility/performance update adds semantically labeled chart r
 2. Add focused frontend coverage for successful fetch and API-error rendering.
 3. Use a local random generator for seeded mock data to avoid changing module-global random state.
 4. Narrow CORS origins before exposing the API beyond local development.
-5. Consider frontend code-splitting if the dashboard bundle continues to exceed the current build advisory threshold.
+5. The dashboard has already been code-split to keep the main JavaScript chunk below Vite's advisory threshold; any further performance work should be based on a runtime measurement rather than bundle size alone.
 
 These are recommendations inferred from current code and validation, not commitments or externally supplied product requirements.

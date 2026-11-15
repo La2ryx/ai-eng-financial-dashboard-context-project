@@ -1,6 +1,6 @@
 # B2B/B2C view specification
 
-**Status:** Proposal only; not implemented in the live dashboard.
+**Status:** Implemented as an All business/B2B/B2C filter in the live dashboard.
 
 ## Goal
 
@@ -10,7 +10,7 @@ Let users inspect aggregate financial metrics for all business, B2B only, or B2C
 
 `BusinessType` is `"B2B" | "B2C"`. The summary, top-categories, comparison, and alerts endpoints accept an optional `business_type` parameter. The raw `GET /api/metrics` movement endpoint does **not** accept that parameter. Dedicated `GET /api/metrics/b2b` and `GET /api/metrics/b2c` endpoints return raw movements for the respective segment and accept date, category, and operation-type filters. The facets endpoint lists available business types but does not filter by one. See [`param-types.ts`](./param-types.ts).
 
-## Proposed interaction
+## Implemented interaction
 
 - Offer three choices: All business, B2B, and B2C. “All” omits `business_type`; the other choices send the matching value to supported aggregate endpoints.
 - Keep the selected business type consistent across every displayed aggregate, comparison, alert, and category request that supports the parameter.
@@ -28,4 +28,4 @@ Let users inspect aggregate financial metrics for all business, B2B only, or B2C
 
 ## Out of scope
 
-This specification does not define new business segments, change backend routes, or assume that the current page consumes the existing aggregate endpoints. The live page currently fetches raw movements without a business-type selector.
+This implementation does not define new business segments, change backend routes, or consume the summary/comparison/category aggregate endpoints. The live page uses the raw all-business route for All business and the dedicated segment route for B2B/B2C movements. The selected segment is shown in the dashboard period label and is also applied to alerts.
