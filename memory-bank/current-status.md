@@ -6,6 +6,7 @@
 - The backend exposes movement, facet, summary, category, comparison, alert, and business-type endpoints. Its records are generated mock data with seeded random choices, while the calendar years depend on the current date ([API routes](../backend/app/routes.py#L248), [mock generator](../backend/app/routes.py#L94), [date logic](../backend/app/routes.py#L65)).
 - Local development uses a Compose frontend/backend setup documented in the [README](../README.md#L39).
 - A repository-specific [dashboard quality skill](../.agents/skills/dashboard-quality/SKILL.md) now records the discovery workflow for UI/API changes, accessibility checks, evidence-led performance work, and validation expectations.
+- Dashboard charts now include screen-reader-accessible data tables and chart labels; loading and API errors are announced, KPI collection has an accessible label, and chart line animations are disabled ([dashboard page](../frontend/src/App.tsx), [income/outcome chart](../frontend/src/components/dashboard/income-outcome-chart.tsx), [profit chart](../frontend/src/components/dashboard/profit-percent-chart.tsx), [KPI row](../frontend/src/components/dashboard/kpi-row.tsx)).
 
 ## Known limitations and risks
 
@@ -17,6 +18,8 @@
 ## Validation snapshot
 
 In the current workspace, the Compose frontend and backend started and their frontend/API-docs HTTP probes returned 200. Frontend tests (5), lint, and production build passed; backend tests (15) passed. The build reported a JavaScript chunk above Vite's 500 kB advisory threshold, and pytest emitted one Starlette/httpx deprecation warning. Full command details are in the [verification report](../verification.md#rule-to-finding-mapping-and-validation).
+
+The dashboard accessibility/performance update adds semantically labeled chart regions and text equivalents for chart data, status/error announcements, and disables line-chart animations. Its feature-branch test, lint, and build outcomes are recorded in `verification.md`; no measured bundle-size or rendering-time improvement is claimed.
 
 ## Skills discovery notes
 

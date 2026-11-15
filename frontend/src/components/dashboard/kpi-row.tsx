@@ -10,7 +10,11 @@ interface KPIRowProps {
 
 export function KPIRow({ metrics, loading }: KPIRowProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div
+      role="group"
+      aria-label="Financial key performance indicators"
+      className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"
+    >
       <KPICard
         label="Total Income"
         value={metrics ? formatCurrency(metrics.totalIncome) : '—'}

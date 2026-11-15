@@ -48,8 +48,15 @@ function App() {
         <div className="flex flex-col gap-8">
           <DashboardHeader period="2024 - Full Year" />
 
+          <p className="sr-only" role="status" aria-live="polite">
+            {loading ? "Loading financial dashboard data." : ""}
+          </p>
+
           {error ? (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive-foreground">
+            <div
+              role="alert"
+              className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive-foreground"
+            >
               {error}
             </div>
           ) : null}

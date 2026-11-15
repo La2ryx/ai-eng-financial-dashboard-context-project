@@ -134,3 +134,16 @@ These are evidence-backed suggestions, not changes made as part of the context-b
 2. **Add an `App`-level test for successful loading and API failure.** Existing frontend coverage tests calculations but not the page's network and error-state behavior.
 3. **Isolate seeded randomness.** Use a local random generator so deterministic mock generation does not reset module-global random state.
 4. **Review CORS for any non-local deployment.** Replace the wildcard origin with the intended trusted frontend origins if credentials are needed.
+
+## Dashboard quality change validation
+
+The `feature/dashboard-quality` branch makes a dashboard-only accessibility and chart-rendering change. It adds an accessible group name for KPIs; polite loading and alert error announcements; accessible chart labels and screen-reader-only data tables containing the values shown in each chart; and disables Recharts line animations. The companion [change note](./frontend/specs/dashboard-quality-change.md) records scope and claim limits.
+
+Validation was attempted from `frontend/`:
+
+- `npm test` — could not run: `vitest: not found` (exit 127).
+- `npm run lint` — could not run: `eslint: not found` (exit 127).
+- `npm run build` — could not run: `tsc: not found` (exit 127).
+- `git diff --check` — whitespace validation; outcome recorded after the final patch.
+
+The frontend dependencies are not installed in this workspace. No packages were installed. These results are environment blockers, not passing test/build evidence. The changes make no claim of measured performance improvement or completed assistive-technology audit; disabling line animations is the specific rendering change.
