@@ -8,41 +8,41 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-          <div role="group" aria-label="Monthly profit margin chart. A data table follows.">
-            <ResponsiveContainer width="100%" height={280}>
-              <LineChart
-                data={data}
-                margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
-                accessibilityLayer
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" strokeOpacity={0.6} />
-                <XAxis
-                  dataKey="month"
-                  tick={{ fontSize: 12, fill: 'var(--color-muted-foreground)' }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(v) => `${v}%`}
-                  width={48}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Line
-                  type="monotone"
-                  dataKey="profitPercent"
-                  name="Profit Margin"
-                  stroke="var(--chart-profit)"
-                  strokeWidth={2.5}
-                  dot={{ r: 4, fill: 'var(--chart-profit)', strokeWidth: 0 }}
-                  activeDot={{ r: 6, strokeWidth: 0 }}
-                  isAnimationActive={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+  ReferenceLine,
+  ResponsiveContainer,
+} from 'recharts'
+
+interface ProfitPercentChartProps {
+  data: MonthlyDataPoint[]
+  loading?: boolean
+}
+
+interface TooltipPayload {
+  name: string
+  value: number
+  color: string
+}
+
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: TooltipPayload[]
+  label?: string
+}
+
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
+  if (!active || !payload?.length) return null
+  const value = payload[0]?.value ?? 0
+  return (
+    <div className="rounded-lg border border-border bg-card px-4 py-3 shadow-lg text-sm">
+      <p className="font-semibold text-foreground mb-1">{label}</p>
+      <div className="flex items-center gap-2">
+        <span
+          className="inline-block h-2 w-2 rounded-full"
+          style={{ backgroundColor: 'var(--chart-profit)' }}
+        />
+        <span className="text-muted-foreground">Profit margin:</span>
+        <span className="font-medium text-foreground ml-auto pl-4">{value.toFixed(1)}%</span>
+      </div>
     </div>
   )
 }
@@ -76,43 +76,43 @@ export function ProfitPercentChart({ data, loading }: ProfitPercentChartProps) {
             No data available to display
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={280}>
-            <LineChart
-              data={data}
-              margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
-              accessibilityLayer
-              role="img"
-              aria-label="Monthly profit margin chart. A data table follows."
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" strokeOpacity={0.6} />
-              <XAxis
-                dataKey="month"
-                tick={{ fontSize: 12, fill: 'var(--color-muted-foreground)' }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
-                axisLine={false}
-                tickLine={false}
-                tickFormatter={(v) => `${v.toFixed(0)}%`}
-                width={40}
-                domain={['auto', 'auto']}
-              />
-              <ReferenceLine y={0} stroke="var(--color-border)" strokeDasharray="4 4" />
-              <Tooltip content={<CustomTooltip />} />
-              <Line
-                type="monotone"
-                dataKey="profitPercent"
-                name="profitPercent"
-                stroke="var(--chart-profit)"
-                strokeWidth={2}
-                dot={{ r: 3, fill: 'var(--chart-profit)', strokeWidth: 0 }}
-                activeDot={{ r: 5, strokeWidth: 0 }}
-                isAnimationActive={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <div role="group" aria-label="Monthly profit margin chart. A data table follows.">
+            <ResponsiveContainer width="100%" height={280}>
+              <LineChart
+                data={data}
+                margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
+                accessibilityLayer
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" strokeOpacity={0.6} />
+                <XAxis
+                  dataKey="month"
+                  tick={{ fontSize: 12, fill: 'var(--color-muted-foreground)' }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(v) => `${v.toFixed(0)}%`}
+                  width={40}
+                  domain={['auto', 'auto']}
+                />
+                <ReferenceLine y={0} stroke="var(--color-border)" strokeDasharray="4 4" />
+                <Tooltip content={<CustomTooltip />} />
+                <Line
+                  type="monotone"
+                  dataKey="profitPercent"
+                  name="profitPercent"
+                  stroke="var(--chart-profit)"
+                  strokeWidth={2}
+                  dot={{ r: 3, fill: 'var(--chart-profit)', strokeWidth: 0 }}
+                  activeDot={{ r: 5, strokeWidth: 0 }}
+                  isAnimationActive={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         )}
         {hasData ? (
           <table className="sr-only">
