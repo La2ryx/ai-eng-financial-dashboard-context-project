@@ -111,12 +111,14 @@ The status below tracks this work against the supplied reference checklist. ✅ 
 
 ## Phase commit trail
 
-Each major phase was committed separately:
+The four deliverable phases are separate commits in the pushed `main` history (checked against `origin/main`):
 
-1. Phase 1 — verified summary and setup trail: `ad3cdd2` (`docs: add verified project summary and setup trail`).
-2. Phase 2 — categorized engineering findings: `ab54424` (`docs: document evidence-based engineering findings`).
-3. Phase 3 — actionable rules and workflow validation: `227877f` (`docs: add actionable repository agent rules`).
-4. Phase 4 — product, stack, and status memory bank: `892ac82` (`docs: add product and technical memory bank`).
+1. Phase 1 — verified summary and setup trail: `ad3cdd2e1f8d082eea0b55a1ad6b3d207a8172df` (`docs: add verified project summary and setup trail`).
+2. Phase 2 — categorized engineering findings: `ab54424c742c58b0b572a137c903a36593624662` (`docs: document evidence-based engineering findings`).
+3. Phase 3 — actionable rules and workflow validation: `227877f49086c15c8c50606b64b4cc2a277a3616` (`docs: add actionable repository agent rules`).
+4. Phase 4 — product, stack, and status memory bank: `892ac82883259262d8b2dbfc725b911ac955faaf` (`docs: add product and technical memory bank`).
+
+These phase commits are followed on `main` by two documentation-validation commits: `944e23719725992103f34a12e25bdbfa0e80c2ce` (`docs: record final checklist verification`) and `48b5a2cb4b27176eaf7a1d7abdbdcd83609c9ae3` (`docs: validate frontend API integration guidance`). The latter was the pushed `main` tip when this trail was checked. The phase commits were not recreated or rewritten; their separate commits and ancestry on the pushed branch were verified directly.
 
 ## Final verification
 
