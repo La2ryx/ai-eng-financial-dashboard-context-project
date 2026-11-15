@@ -17,9 +17,9 @@
 
 ## Validation snapshot
 
-In the current workspace, the Compose frontend and backend started and their frontend/API-docs HTTP probes returned 200. Frontend tests (5), lint, and production build passed; backend tests (15) passed. The build reported a JavaScript chunk above Vite's 500 kB advisory threshold, and pytest emitted one Starlette/httpx deprecation warning. Full command details are in the [verification report](../verification.md#rule-to-finding-mapping-and-validation).
+Earlier context-building validation included a successful Compose run, frontend tests (5), lint/build, and backend tests (15); the initial build reported a JavaScript chunk above Vite's 500 kB advisory threshold. After dependency installation and dashboard follow-up work, current frontend validation is 8 tests passing, lint passing, production build passing, and no workspace diagnostics. Chart components are now lazy-loaded: the build emits a 187.80 kB main JavaScript chunk (59.89 kB gzip) and a separate 342.29 kB `LineChart` chunk (100.53 kB gzip). This removes the oversized-main-chunk warning; it is a bundle composition measurement, not a runtime speed benchmark. Full command details are in the [verification report](../verification.md#dashboard-quality-change-validation).
 
-The dashboard accessibility/performance update adds semantically labeled chart regions and text equivalents for chart data, status/error announcements, and disables line-chart animations. Its feature-branch test, lint, and build outcomes are recorded in `verification.md`; no measured bundle-size or rendering-time improvement is claimed.
+The dashboard accessibility/performance update adds semantically labeled chart regions and text equivalents for chart data, status/error announcements, disables line-chart animations, and lazy-loads chart components. Static-render accessibility regression tests check the KPI group, chart labels, and table structure/content. These checks do not claim a manual assistive-technology audit or measured runtime speedup.
 
 ## Skills discovery notes
 

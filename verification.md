@@ -146,4 +146,20 @@ Validation was attempted from `frontend/`:
 - `npm run build` — could not run: `tsc: not found` (exit 127).
 - `git diff --check` — whitespace validation; outcome recorded after the final patch.
 
-The frontend dependencies are not installed in this workspace. No packages were installed. These results are environment blockers, not passing test/build evidence. The changes make no claim of measured performance improvement or completed assistive-technology audit; disabling line animations is the specific rendering change.
+The initial frontend checks were blocked because dependencies were not installed; after authorized installation, the `vite/client` diagnostic was resolved and the syntax issue in the profit chart was fixed. Current results, including the follow-up bundle-splitting and regression-test work, supersede those initial blocked outcomes and are recorded below.
+
+### Final dashboard quality review
+
+The dashboard now lazy-loads both chart components while keeping the KPI/header view and default relative `/api` fetch path unchanged. The successful production build reports the main JavaScript chunk at 187.80 kB (59.89 kB gzip) and a separate Recharts `LineChart` chunk at 342.29 kB (100.53 kB gzip). The main bundle is therefore no longer above Vite's 500 kB advisory threshold; the chart chunk is loaded separately when the dashboard chart components are rendered. These are build artifact sizes, not a runtime performance benchmark.
+
+Added server-rendered accessibility regression tests for the KPI group, both chart labels, and the tables' captions, headers, and representative formatted values.
+
+Exact checks run from `frontend/`:
+
+- `npm test` — passed: 2 test files, 8 tests.
+- `npm run lint` — passed.
+- `npm run build` — passed (TypeScript and Vite production build); no chunk-size advisory was emitted. Output sizes are listed above.
+- Workspace diagnostics — no errors found.
+- `git diff --check` — passed.
+
+The tests verify accessible markup in static rendering; they are not a substitute for a manual screen-reader/keyboard audit. No runtime speedup is claimed.
