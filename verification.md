@@ -108,9 +108,11 @@ The status below tracks this work against the supplied reference checklist. ✅ 
 | Each rule validated against a real repository workflow | ✅ Complete | See the rule-to-finding mapping and validation results above. |
 | `memory-bank` covers product, stack, and current status | ✅ Complete | See [product overview](./memory-bank/product-overview.md), [tech stack](./memory-bank/tech-stack.md), and [current status](./memory-bank/current-status.md). |
 | Artifacts demonstrate verified agent-assisted stewardship | Agent artifacts complete; student review ❓ | Source links, test results, runtime probes, and phase commits are recorded. The student must still independently spot-check and accept the artifacts. |
-| Frontend date range, business-type filter, and alerts view are implemented | ✅ Implemented and tested | See the live implementation follow-up below and tests under `frontend/src/lib/dashboard-api.test.ts` and `frontend/src/components/dashboard/dashboard-accessibility.test.tsx`. |
+| Stage three remains scoped to skill-driven dashboard quality | ✅ Focused | The submission includes dashboard-quality accessibility, chart, loading, and performance work plus relevant tests. Filters and alerts are out of scope for this pass. |
 
 ## Phase commit trail
+
+The requested stage-three boundary is now narrowed to the skills-driven dashboard-quality pass; the separate filter-and-alert changes are excluded from this resubmission.
 
 The four deliverable phases are separate commits in the pushed `main` history (checked against `origin/main`):
 
@@ -136,48 +138,31 @@ These are evidence-backed suggestions, not changes made as part of the context-b
 3. **Isolate seeded randomness.** Use a local random generator so deterministic mock generation does not reset module-global random state.
 4. **Review CORS for any non-local deployment.** Replace the wildcard origin with the intended trusted frontend origins if credentials are needed.
 
-## Dashboard quality change validation
+## Stage three: dashboard-quality skills pass
 
-The `feature/dashboard-quality` branch makes a dashboard-only accessibility and chart-rendering change. It adds an accessible group name for KPIs; polite loading and alert error announcements; accessible chart labels and screen-reader-only data tables containing the values shown in each chart; and disables Recharts line animations. The companion [change note](./frontend/specs/dashboard-quality-change.md) records scope and claim limits.
+### Skill discovery and selection
 
-Validation was attempted from `frontend/`:
+- Ran `npx skills find dashboard accessibility`. The command prompted to install `skills@1.9.0`; after approval, it returned candidates including `plugin87/ux-ui-agent-skills@data-dashboard` and `alexsnchz/skills@wcag-design`.
+- Selected and installed `plugin87/ux-ui-agent-skills@data-dashboard` using `npx skills add plugin87/ux-ui-agent-skills@data-dashboard`. Its guidance is in [`.agents/skills/data-dashboard/SKILL.md`](./.agents/skills/data-dashboard/SKILL.md).
+- Applied the skill's chart accessibility guidance: chart output is named accessibly and each chart has an `.sr-only` semantic data table with a caption and scoped headers. This was combined with the repository-specific [`dashboard-quality` skill](./.agents/skills/dashboard-quality/SKILL.md), which emphasizes focused changes, tests, and evidence-led performance claims.
+- The external skill requires the full UX/UI Agent Skills kit and gate scripts to produce a verdict. The full kit is not installed, so it was used as guidance only; no gate verdict or measured UX/contrast score is claimed.
 
-- `npm test` — could not run: `vitest: not found` (exit 127).
-- `npm run lint` — could not run: `eslint: not found` (exit 127).
-- `npm run build` — could not run: `tsc: not found` (exit 127).
-- `git diff --check` — whitespace validation; outcome recorded after the final patch.
+### Scope and checks
 
-The initial frontend checks were blocked because dependencies were not installed; after authorized installation, the `vite/client` diagnostic was resolved and the syntax issue in the profit chart was fixed. Current results, including the follow-up bundle-splitting and regression-test work, supersede those initial blocked outcomes and are recorded below.
+This stage-three pass is limited to dashboard-quality work: accessible KPI/chart output, polite loading/error announcements, disabled chart-line animation, lazy-loaded charts, and targeted accessibility regression tests. Date/business filters and alerts are unrelated feature work and are excluded. No backend or API behavior was changed.
 
-### Final dashboard quality review
+The main KPI/header view remains eagerly available; chart components load separately. The recorded production build reported a 187.80 kB (59.89 kB gzip) main JavaScript chunk and a separate 342.29 kB (100.53 kB gzip) Recharts chart chunk. This is bundle composition, not a runtime speed benchmark.
 
-The dashboard now lazy-loads both chart components while keeping the KPI/header view and default relative `/api` fetch path unchanged. The successful production build reports the main JavaScript chunk at 187.80 kB (59.89 kB gzip) and a separate Recharts `LineChart` chunk at 342.29 kB (100.53 kB gzip). The main bundle is therefore no longer above Vite's 500 kB advisory threshold; the chart chunk is loaded separately when the dashboard chart components are rendered. These are build artifact sizes, not a runtime performance benchmark.
-
-Added server-rendered accessibility regression tests for the KPI group, both chart labels, and the tables' captions, headers, and representative formatted values.
-
-Exact checks run from `frontend/`:
+Recorded checks for the dashboard-quality implementation from `frontend/`:
 
 - `npm test` — passed: 2 test files, 8 tests.
 - `npm run lint` — passed.
-- `npm run build` — passed (TypeScript and Vite production build); no chunk-size advisory was emitted. Output sizes are listed above.
+- `npm run build` — passed; no chunk-size advisory was emitted.
 - Workspace diagnostics — no errors found.
-- `git diff --check` — passed.
+- `git diff --check` — passed for the final resubmission state.
 
-The tests verify accessible markup in static rendering; they are not a substitute for a manual screen-reader/keyboard audit. No runtime speedup is claimed.
+Static markup tests cover the KPI group, chart labels, and data-table captions, headers, and values. They do not replace a manual keyboard/screen-reader audit. No runtime speedup is claimed.
 
-### Submission follow-up and human review
+### Metadata
 
-The feature specifications from `origin/feature/frontend-specs` were integrated into this branch and then implemented in the live page. The implementation uses only existing backend routes; it does not alter backend behavior or add persisted financial data.
-
-The following checks remain intentionally unclaimed because they require the student's own review or real browser/assistive-technology use:
-
-- ❓ **Independent artifact review:** Personally inspect this report, the linked source/rules/memory-bank artifacts, and the proposal boundary in `frontend/specs/README.md`; confirm the workspace/fork is the one intended for submission and accept or amend the conclusions.
-- ❓ **Manual accessibility audit:** In the target browser, use keyboard-only navigation to check logical tab order and visible focus. With the screen reader used for the course/project, inspect the KPI group, both chart labels and their data tables, and loading/error announcements. Record browser, OS, screen reader/version, observed issues, and outcome here only after performing the review. Automated static markup tests are not a substitute.
-- ❓ **Runtime performance audit:** No browser-based before/after interaction or loading benchmark is available in this validation. Bundle sizes are documented above but do not establish runtime performance improvement. If the hand-in requires a performance claim, measure the same production build and representative interaction in a browser before and after the change, and record tool, environment, metric, and results; otherwise make no runtime speedup claim.
-
-
-### Live filters and alerts implementation
-
-The dashboard now initializes its date bounds from `/api/metrics/facets`; rejects malformed, impossible, or reversed dates before applying them; fetches raw all-business or dedicated B2B/B2C movements with inclusive date bounds; and requests monthly alerts using the same range/business-type selection. The page label reflects the applied dates and selection. The accessible alerts table shows period, outcome total, historical baseline, and increase percentage, and distinguishes loading, API failure, and empty results. An explicit no-movements message is shown when the selected filter returns no records. No backend changes were needed.
-
-New frontend coverage checks invalid date handling, route/query mapping for all-business and B2B/B2C movement requests, shared filters for alerts, API failures, semantic alert headers/percentage formatting, and labeled filter controls. Final implementation checks: `npm test` — 3 files, 18 tests passed; `npm run lint` — passed; `npm run build` — passed (main JavaScript chunk 194.40 kB / 61.77 kB gzip, chart chunk 342.29 kB / 100.46 kB gzip); editor diagnostics reported no errors in the changed application, API, and UI modules. The backend suite (`docker compose exec -T backend pytest -q`) passed 15 tests with one existing Starlette/httpx deprecation warning. Compose smoke checks returned frontend HTTP 200, valid facets, 169 B2B movements all tagged B2B, and a valid array response for B2B-filtered monthly alerts. These are automated/integration checks; browser interaction, manual screen-reader checks, and runtime performance benchmarks remain unverified.
+`frontend/index.html` now declares the title “Financial Metrics Dashboard” and a concise meta description in place of the generic “frontend” title.

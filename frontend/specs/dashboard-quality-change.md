@@ -13,4 +13,4 @@
 
 ## Validation
 
-See the feature-branch verification entry in [`verification.md`](../../verification.md#dashboard-quality-change-validation) for exact test, lint, and build results. A real assistive-technology audit and a before/after performance benchmark are not claimed by this change.
+See the stage-three entry in [`verification.md`](../../verification.md#stage-three-dashboard-quality-skills-pass) for skill discovery and the recorded test, lint, and build results. The external data-dashboard skill was applied in guidance-only mode because its full gate kit is not installed. A real assistive-technology audit and a before/after performance benchmark are not claimed by this change.
